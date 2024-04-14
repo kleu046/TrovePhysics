@@ -25,7 +25,7 @@ ui.page_opts(title="Reaction force, normal force and friction",) # fillable=True
 def rad(angle: float) -> float:
     return angle / 180 * np.pi
 
-with ui.sidebar():
+with ui.sidebar(style='background:#09AAFF'):
     ui.input_text("angle", "Slope Angle:", str(angle))
     ui.input_slider("angle_slider", "", min=0, max=60, value=angle, step=0.001)
     ui.input_text("mass", "Mass / kg", str(mass))
@@ -130,6 +130,15 @@ def calc_motion() -> None:
     except:
         ...
 
+with ui.card():
+    @render.text
+    def legend():
+        return "Green box: stationary, Red box: sliding"
+
+    @render.text
+    def animate_button_instruct():
+        return "Click play button to see if the block would move"
+
 @render.plot
 @reactive.event(input.angle, input.mu, input.mass, input.time)
 def plot() -> None:
@@ -160,7 +169,7 @@ def plot() -> None:
     if f:
         ax.arrow(rect_bottom_centre_x, rect_bottom_centre_y, dx=f/w*dy_std * np.cos(rad(angle)), dy=f/w*dy_std * np.sin(rad(angle)), shape='full', lw=2, head_width=plot_width/50)
         ax.text(rect_bottom_centre_x + f/w*dy_std * np.cos(rad(angle)) + 8, rect_bottom_centre_y + f/w*dy_std * np.sin(rad(angle)) + 2, f'{str(round(f,1))} N', ha='left', fontdict={'size':12})        
-    
+
     ax.set_xlim(0,plot_width)
     ax.set_ylim(-40,plot_height)
     ax.set_aspect('equal')
@@ -168,28 +177,35 @@ def plot() -> None:
 
     return fig
 
+with ui.card():
+    @render.text
+    def notes1():
+        return f"We are interested in whether the block will slide down the slope here.  The forces along the sloping surface is what we would like to work out."
 
-@render.text
-def notes1():
-    return f"We are interested in whether the block will slide down the slope here.  The forces along the sloping surface is what we would like to work out."
+    @render.text
+    def notes2():
+        return f"Suppose y is direction perpendicularly upward from the sloping surface.  Since the object sliding down the slope could neither lift off from the sloping service nor sink into the sloping surface, the net force in the y direction has to be zero.  (Recall Newton's law of inertia)"
 
-@render.text
-def notes2():
-    return f"Suppose y is direction perpendicularly upward from the sloping surface.  Since the object sliding down the slope could neither lift off from the sloping service nor sink into the sloping surface, the net force in the y direction has to be zero.  (Recall Newton's law of inertia)"
+    @render.text
+    def notes3():
+        return f"This is the key point to starting point of the calculations.  Given the weight of the object and the angle of the slope, one can work out the y component of the block's weight, which is in equal magnitude but in opposite direciton to the Normal force that is required for the calculation of friction.  Consequently, we can calculate the friction, using a known or measured coefficient of friction and the normal force, where friction = 'coefficient of friction x normal force.  Note that the direction of friction must be pointing up-slope against the downward pull as a result of the block's weight."
 
-@render.text
-def notes3():
-    return f"This is the key point to starting point of the calculations.  Given the weight of the object and the angle of the slope, one can work out the y component of the block's weight, which is in equal magnitude but in opposite direciton to the Normal force that is required for the calculation of friction.  Consequently, we can calculate the friction, using a known or measured coefficient of friction and the normal force, where friction = 'coefficient of friction x normal force.  Note that the direction of friction must be pointing up-slope against the downward pull as a result of the block's weight."
+    @render.text
+    def notes4():
+        return f"What is left is just working out the down-slope force as a result of the block's weight.  This is the x component of the block's weight that is perpendicular to the y component, pointing in the down-slope direction."
 
-@render.text
-def notes4():
-    return f"What is left is just working out the down-slope force as a result of the block's weight.  This is the x component of the block's weight that is perpendicular to the y component, pointing in the down-slope direction."
+    @render.text
+    def notes5():
+        return f"What is left is just working out the down-slope force as a result of the block's weight.  This is the x component of the block's weight that is perpendicular to the y component, pointing in the down-slope direction.  The block will remain stationary if friction is greater than or equal to the down-slope force."
 
-@render.text
-def notes5():
-    return f"What is left is just working out the down-slope force as a result of the block's weight.  This is the x component of the block's weight that is perpendicular to the y component, pointing in the down-slope direction.  The block will remain stationary if friction is greater than or equal to the down-slope force."
+    @render.text
+    def notes6():
+        return f"Weighing and measuring the coefficient of friction on a flat surface and then make prediction is far more convenient than to measure the forces along a slope.  And safer! Imagine dragging 10 tonne object up and down a hill!"
 
-@render.text
-def notes6():
-    return f"Weighing and measuring the coefficient of friction on a flat surface and then make prediction is far more convenient than to measure the forces along a slope.  And safer! Imagine dragging 10 tonne object up and down a hill!"
+    @render.text
+    def notes7():
+        return f"An interesting point to note is that, just like an object free falling under gravity and ignoring air resistance, the acceleration and therefore the speed of the block sliding down a slope does not depend on its weight.  As it can be seen, increasing mass in the input merely increases all the forces proportionally.  The acceleration is always just the component of gravitational acceleration in the down-slope direciton.  Try changing \"Mass\" in the input side-bar!"
 
+    @render.text
+    def notes8():
+        return f"Another point to note is that the condition at which the block will remain stationary depends only on the coefficient of friction and the slope\'s angle.  It does not depend on the block\'s weight.  Can you show this mathematically?  Hint: the block remains stationary when down-slope force is less than friction."
