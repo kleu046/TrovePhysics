@@ -3,6 +3,7 @@ from shiny import reactive
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.patches import Rectangle
+import time
 
 plot_width: float = 100.0
 plot_height: float = 100.0
@@ -39,7 +40,6 @@ def store_angle() -> None:
         angle = float(input.angle())
     except:
         f'error: setting angle = {angle}; input.angle() = {input.angle()}'
-        ui.update_text("angle", value=str(0))
 
 @reactive.effect
 def store_mu() -> None:
@@ -48,16 +48,14 @@ def store_mu() -> None:
         mu = float(input.mu())
     except:
         f'error: setting mu = {mu}; input.mu() = {input.mu()}'
-        ui.update_text("mu", value=str(0))
 
 @reactive.effect
 def store_mass() -> None:
     try:
         global mass
-        mu = float(input.mass())
+        mass = float(input.mass())
     except:
         f'error: setting mass = {mass}; input.mass() = {input.mass()}'
-        ui.update_text("mass", value=str(100))
 
 def calc_y(x: float) -> None:
     if  angle < 60:
@@ -65,7 +63,7 @@ def calc_y(x: float) -> None:
 
 def create_rectangle(anchor_x: float, _anchor_y: float, width: float, height: float, angle: float) -> matplotlib.patches.Rectangle:
     edge_color = box_edge_sliding_color if is_sliding() else box_edge_stationary_color
-    return Rectangle((anchor_x, _anchor_y), width, height, angle=angle, lw=5, facecolor = box_color, edgecolor = edge_color)
+    return Rectangle((anchor_x, _anchor_y), width, height, angle=angle, lw=5, facecolor = box_color, edgecolor = edge_color) #use rotation_point parameter default = 'xy' = bottom left corner (x, y) available in later matplotlive versions?
 
 def is_sliding() -> bool:
     try:
@@ -174,7 +172,6 @@ def plot() -> None:
 @render.text
 def notes1():
     return f"We are interested in whether the block will slide down the slope here.  The forces along the sloping surface is what we would like to work out."
-
 
 @render.text
 def notes2():
